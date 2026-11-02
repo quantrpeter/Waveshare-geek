@@ -24,7 +24,7 @@ _OFFSET_X = 40
 _OFFSET_Y = 53
 _MADCTL = 0x70  # MX | MV | ML
 _DRAW_LINES = 45
-_COLOR_ORDER = st7789.BYTE_ORDER_RGB
+_COLOR_ORDER = st7789.BYTE_ORDER_BGR  # RGB swaps red and blue on this panel
 
 _BARS = (
     0xE53935,  # red
@@ -123,6 +123,8 @@ display.init()
 # Driver init writes orientation 0 (MADCTL 0x00). This panel's 240x135
 # window is the Waveshare landscape map, so force that MADCTL afterwards.
 display.set_params(0x36, bytes([_MADCTL | _COLOR_ORDER]))
+# This panel needs INVON, or it shows a negative picture.
+display.set_params(0x21)
 display.set_backlight(100)
 print("Display ready")
 
@@ -168,7 +170,7 @@ marker_x = 4
 marker_dx = 4
 frame = 0
 boot_was_down = False
-invert = True  # driver init already sends INVON
+invert = True
 
 print("LCD demo running (BOOT toggles invert)")
 lv.refr_now(None)
